@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopMate Support</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink: #1f2933; --muted: #68737d; --cream: #f5f0e8; --paper: #fffdf8; --coral: #e56b4d; --teal: #187c7b; --line: #ded8cd; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: radial-gradient(circle at 10% 0%, #f6c6a5 0, transparent 27%), var(--cream); font-family: "DM Sans", sans-serif; min-height: 100vh; }
+    .shell { width: min(1040px, calc(100% - 32px)); margin: 0 auto; padding: 34px 0; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
+    .eyebrow { color: var(--teal); font-size: 12px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; }
+    h1 { font: 700 clamp(2rem, 5vw, 4.4rem)/.95 "Space Grotesk", sans-serif; letter-spacing: -2px; margin: 8px 0 12px; max-width: 650px; }
+    header p { color: var(--muted); max-width: 500px; margin: 0; }
+    .status { align-items: center; color: var(--teal); display: flex; font-size: 13px; gap: 8px; white-space: nowrap; }
+    .dot { background: #49a66b; border-radius: 50%; height: 9px; width: 9px; }
+    .chat { background: var(--paper); border: 1px solid var(--line); box-shadow: 0 16px 48px #60513c18; display: grid; grid-template-rows: 1fr auto; min-height: 570px; }
+    .messages { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding: clamp(20px, 5vw, 42px); }
+    .message { max-width: min(720px, 90%); padding: 15px 18px; line-height: 1.5; white-space: pre-wrap; }
+    .message p { margin: 0; }
+    .message strong { font-weight: 700; }
+    .bot { align-self: flex-start; background: #e7f1ee; border-left: 3px solid var(--teal); }
+    .user { align-self: flex-end; background: #f9dfd3; border-right: 3px solid var(--coral); }
+    .message-meta { color: var(--muted); font-size: 11px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .7px; }
+    .composer { border-top: 1px solid var(--line); padding: 18px clamp(20px, 5vw, 42px) 22px; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+    button { border: 0; cursor: pointer; font: inherit; }
+    .suggestion { background: transparent; border: 1px solid var(--line); color: var(--teal); font-size: 13px; padding: 8px 12px; }
+    .suggestion:hover { background: #e7f1ee; }
+    form { display: flex; gap: 10px; }
+    input { background: #fff; border: 1px solid var(--line); color: var(--ink); flex: 1; font: inherit; min-width: 0; padding: 14px 15px; outline-color: var(--teal); }
+    .send { background: var(--teal); color: white; font-weight: 700; padding: 0 22px; }
+    .send:disabled { cursor: wait; opacity: .6; }
+    .clear { background: transparent; color: var(--muted); font-size: 12px; margin-top: 13px; padding: 0; text-decoration: underline; }
+    @media (max-width: 600px) { .shell { padding-top: 22px; } header { display: block; } .status { margin-top: 18px; } .chat { min-height: 620px; } form { align-items: stretch; flex-direction: column; } .send { min-height: 47px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div><div class="eyebrow">ShopMate / customer care</div><h1>Let’s sort out your shop.</h1><p>Search the catalog, get a considered recommendation, or check an order in one quick conversation.</p></div>
+      <div class="status"><span class="dot"></span> Support online</div>
+    </header>
+    <section class="chat" aria-label="Customer support chat">
+      <div id="messages" class="messages"></div>
+      <div class="composer">
+        <div id="suggestions" class="suggestions"></div>
+        <form id="chat-form"><input id="message-input" aria-label="Message" autocomplete="off" placeholder="Ask about a product or order..." required><button class="send" type="submit">Send</button></form>
+        <button id="clear-memory" class="clear" type="button">Clear conversation memory</button>
+      </div>
+    </section>
+  </main>
+  <script>
+    const sessionId = `web-${Math.random().toString(36).slice(2)}`;
+    const messages = document.querySelector('#messages');
+    const suggestions = document.querySelector('#suggestions');
+    const form = document.querySelector('#chat-form');
+    const input = document.querySelector('#message-input');
+    const send = document.querySelector('.send');
+
+    function addMessage(text, role, meta = role === 'bot' ? 'ShopMate AI' : 'You') {
+      const article = document.createElement('article');
+      article.className = `message ${role}`;
+      const metaElement = document.createElement('div');
+      metaElement.className = 'message-meta';
+      metaElement.textContent = meta;
+      const content = document.createElement('p');
+      content.textContent = text;
+      article.append(metaElement, content);
+      messages.append(article);
+      messages.scrollTop = messages.scrollHeight;
+    }
+    function showSuggestions(items) {
+      suggestions.replaceChildren(...items.map((item) => { const button = document.createElement('button'); button.className = 'suggestion'; button.type = 'button'; button.textContent = item; button.onclick = () => { input.value = item; form.requestSubmit(); }; return button; }));
+    }
+    async function sendMessage(text) {
+      addMessage(text, 'user'); input.value = ''; send.disabled = true;
+      try {
+        const response = await fetch('/api/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: text, session_id: sessionId}) });
+        if (!response.ok) throw new Error('Request failed');
+        const data = await response.json(); addMessage(data.reply, 'bot'); showSuggestions(data.suggestions);
+      } catch { addMessage('I could not connect to support. Please try again.', 'bot'); }
+      finally { send.disabled = false; input.focus(); }
+    }
+    form.addEventListener('submit', (event) => { event.preventDefault(); if (input.value.trim()) sendMessage(input.value.trim()); });
+    document.querySelector('#clear-memory').addEventListener('click', async () => { await fetch(`/api/memory/${sessionId}`, {method: 'DELETE'}); messages.replaceChildren(); addMessage('Hi, I’m ShopMate. What can I help you find today?', 'bot'); showSuggestions(['Find wireless headphones', 'Check order NM1001', 'Recommend a gift']); });
+    addMessage('Hi, I’m ShopMate. What can I help you find today?', 'bot'); showSuggestions(['Find wireless headphones', 'Check order NM1001', 'Recommend a gift']);
+  </script>
+</body>
+</html>

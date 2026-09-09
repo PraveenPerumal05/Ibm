@@ -1,0 +1,47 @@
+[
+  {
+    "id": "P1001",
+    "name": "CloudBeat Wireless Headphones",
+    "category": "audio",
+    "price": 79.99,
+    "rating": 4.8,
+    "description": "Comfortable noise-reducing headphones with 30-hour battery life.",
+    "tags": ["wireless", "bluetooth", "music", "headphones"]
+  },
+  {
+    "id": "P1002",
+    "name": "QuietKeys Mechanical Keyboard",
+    "category": "office",
+    "price": 64.50,
+    "rating": 4.6,
+    "description": "A compact, quiet keyboard for focused work and play.",
+    "tags": ["keyboard", "desk", "office", "mechanical"]
+  },
+  {
+    "id": "P1003",
+    "name": "GlowArc Desk Lamp",
+    "category": "home",
+    "price": 42.00,
+    "rating": 4.7,
+    "description": "Adjustable warm-to-cool light with a small footprint.",
+    "tags": ["lamp", "lighting", "desk", "home"]
+  },
+  {
+    "id": "P1004",
+    "name": "MoveMate Fitness Band",
+    "category": "fitness",
+    "price": 49.99,
+    "rating": 4.5,
+    "description": "A lightweight activity tracker with sleep and step insights.",
+    "tags": ["fitness", "tracker", "steps", "health"]
+  },
+  {
+    "id": "P1005",
+    "name": "PocketSound Mini Speaker",
+    "category": "audio",
+    "price": 35.00,
+    "rating": 4.4,
+    "description": "Portable water-resistant speaker for small spaces and travel.",
+    "tags": ["wireless", "speaker", "bluetooth", "travel"]
+  }
+]
